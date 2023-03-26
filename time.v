@@ -22,88 +22,89 @@ fn (mut e Encoder) write_time(t time.Time) !int {
 	return e.bw.write_bytes(buf)
 }
 
-fn (mut d Decoder) read_time() !time.Time {
-	mut ts := C.timespec{}
-	time_format := d.read_byte() !
-	match time_format {
-		mfixext4 { //timestamp 32
-			if d.read_byte()! != mexttime {
-				return IError(ErrWrongType{
-					dt: time_format	})
-			}
-			sec := d.read_data_size_bytes(muint32)!
-			ts.tv_sec = get_muint32(sec)
-		}
-		mfixext8 { //timestamp 64
-			if d.read_byte()! != mexttime {
-				return IError(ErrWrongType{
-					dt: time_format })
-			}
-		}
-		mext8 { // timestamp 96
-			if d.read_byte()! != mexttime || d.read_byte()! != u8(12) {
-				return IError(ErrWrongType{
-					dt: time_format })
-			}
-			nsec := d.read_data_size_bytes(muint32)!
-			ts.tv_nsec = get_muint32(nsec)
-			sec := d.read_data_size_bytes(muint64)!
-			ts.tv_nsec = get_mint64(sec)
-		} else {
-				return IError(ErrWrongType{
-					dt: time_format })
-		}
-	}
-
-	loc_tm := C.tm{}
-	C.localtime_r(voidptr(&ts.tv_sec), &loc_tm)
-	return convert_ctime(loc_tm, int(ts.tv_nsec / 1000))
-}
-
-
-
-struct C.tm {
-	tm_sec   int
-	tm_min   int
-	tm_hour  int
-	tm_mday  int
-	tm_mon   int
-	tm_year  int
-	tm_wday  int
-	tm_yday  int
-	tm_isdst int
-}
-
-
-
-struct C.timespec {
+//C.timespec` was declared  in module time
+struct C.vmsgp_timespec { 
 mut:
 	tv_sec  i64
 	tv_nsec i64
 }
 
-// convert_ctime converts a C time to V time.
-fn convert_ctime(t C.tm, microsecond int) time.Time {
-	return time.Time{
-		year: t.tm_year + 1900
-		month: t.tm_mon + 1
-		day: t.tm_mday
-		hour: t.tm_hour
-		minute: t.tm_min
-		second: t.tm_sec
-		microsecond: microsecond
-		unix: make_unix_time(t)
-		// for the actual code base when we
-		// call convert_ctime, it is always
-		// when we manage the local time.
-		is_local: true
-	}
-}
+// fn (mut d Decoder) read_time() !time.Time {
+// 	mut ts := C.vmsgp_timespec{}
+// 	time_format := d.read_byte() !
+// 	match time_format {
+// 		mfixext4 { //timestamp 32
+// 			if d.read_byte()! != mexttime {
+// 				return IError(ErrWrongType{
+// 					dt: time_format	})
+// 			}
+// 			sec := d.read_data_size_bytes(muint32)!
+// 			ts.tv_sec = get_muint32(sec)
+// 		}
+// 		mfixext8 { //timestamp 64
+// 			if d.read_byte()! != mexttime {
+// 				return IError(ErrWrongType{
+// 					dt: time_format })
+// 			}
+// 		}
+// 		mext8 { // timestamp 96
+// 			if d.read_byte()! != mexttime || d.read_byte()! != u8(12) {
+// 				return IError(ErrWrongType{
+// 					dt: time_format })
+// 			}
+// 			nsec := d.read_data_size_bytes(muint32)!
+// 			ts.tv_nsec = get_muint32(nsec)
+// 			sec := d.read_data_size_bytes(muint64)!
+// 			ts.tv_nsec = get_mint64(sec)
+// 		} else {
+// 				return IError(ErrWrongType{
+// 					dt: time_format })
+// 		}
+// 	}
 
-[inline]
-fn make_unix_time(t C.tm) i64 {
-	return i64(C.timegm(&t))
-}
+// 	loc_tm := C.vmsgp_tm{}
+// 	//C.localtime_r(voidptr(&ts.tv_sec), voidptr(&loc_tm))
+// 	return convert_ctime(loc_tm, int(ts.tv_nsec / 1000))
+// }
+
+
+
+// struct C.vmsgp_tm {
+// 	tm_sec   int
+// 	tm_min   int
+// 	tm_hour  int
+// 	tm_mday  int
+// 	tm_mon   int
+// 	tm_year  int
+// 	tm_wday  int
+// 	tm_yday  int
+// 	tm_isdst int
+// }
+
+
+
+// // convert_ctime converts a C time to V time.
+// fn convert_ctime(t C.vmsgp_tm, microsecond int) time.Time {
+// 	return time.Time{
+// 		year: t.tm_year + 1900
+// 		month: t.tm_mon + 1
+// 		day: t.tm_mday
+// 		hour: t.tm_hour
+// 		minute: t.tm_min
+// 		second: t.tm_sec
+// 		microsecond: microsecond
+// 		unix: make_unix_time(t)
+// 		// for the actual code base when we
+// 		// call convert_ctime, it is always
+// 		// when we manage the local time.
+// 		is_local: true
+// 	}
+// }
+
+// [inline]
+// fn make_unix_time(t C.vmsgp_tm) i64 {
+// 	return 0 //(C.timegm(C.time_t(&t)))
+// }
 
 [inline]
 fn get_unix(b []u8) (i64, i32) {
