@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 import math
 

@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 fn test_make_without_value() {
 	bb := make_buf_writer(0)

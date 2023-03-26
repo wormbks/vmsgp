@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 // read_bool reads bool value from the Decoder
 pub fn (mut s Decoder) read_bool() !bool {

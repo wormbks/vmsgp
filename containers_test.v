@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 fn test_read_array_size() ! {
 	//{[1,2,3]}

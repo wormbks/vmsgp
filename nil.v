@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 // read_nil() reads nil value
 pub fn (mut s Decoder) read_nil() !bool {

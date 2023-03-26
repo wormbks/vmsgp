@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 const (
 	input_buf_size = 5

@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 // read_string reads string from the Decoder
 pub fn (mut s Decoder) read_string() !string {

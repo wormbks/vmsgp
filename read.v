@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 interface Reader {
 mut:
@@ -40,7 +40,7 @@ fn (mut s Decoder) read_byte() !u8 {
 }
 
 
-fn make_buf_reader(in_buf []u8) BufReader {
+pub fn make_buf_reader(in_buf []u8) BufReader {
 	return BufReader{
 		buf: in_buf
 		len: in_buf.len
@@ -55,7 +55,7 @@ fn (s BufReader) peek() ?u8 {
 	return s.buf[s.cursor]
 }
 
-fn (mut s BufReader) read_bytes(mut rb []u8) !int {
+pub fn (mut s BufReader) read_bytes(mut rb []u8) !int {
 	if rb.len == 0 {
 		return error(@FN + ': `rb.len` == 0')
 	}

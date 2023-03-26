@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 pub interface Writer {
 mut:

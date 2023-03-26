@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 enum DataKind {
 	msgp_unknown
@@ -15,11 +15,6 @@ enum DataKind {
 	msgp_map
 }
 
-// enum SizeKind {
-// 	msgp_u8
-// 	msgp_u16
-// 	msgp_u32
-// }
 
 const (
 	last4     = 0x0f

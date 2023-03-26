@@ -1,4 +1,4 @@
-module msgp
+module vmsgp
 
 // Error out of bounds
 pub struct ErrOutOfBounds {
